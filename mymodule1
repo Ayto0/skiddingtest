@@ -1,12 +1,11 @@
--- Function to create a spinning floating sphere
 local function CreateSpinningSphere(parent, angle)
     local sphere = Instance.new("Part")
-    sphere.Size = Vector3.new(5, 5, 5)
+    sphere.Size = Vector3.new(2, 2, 2)
     sphere.Shape = Enum.PartType.Ball
-    sphere.BrickColor = BrickColor.new("Bright red")
+    sphere.BrickColor = BrickColor.new("Black")
     sphere.Anchored = true
     sphere.CanCollide = false
-    sphere.Transparency = 0.5
+    sphere.Transparency = 0.1
     sphere.Parent = parent
 
     local function UpdatePosition()
@@ -15,11 +14,10 @@ local function CreateSpinningSphere(parent, angle)
         local humanoidRootPart = character and character:FindFirstChild("HumanoidRootPart")
 
         if humanoidRootPart and sphere.Parent then
-            local radius = 15  -- Adjust the radius of the circle
-            local x = humanoidRootPart.Position.x + radius * math.cos(angle)
-            local z = humanoidRootPart.Position.z + radius * math.sin(angle)
-            sphere.Position = Vector3.new(x, humanoidRootPart.Position.y + 5, z)
-            angle = angle + 0.01  -- Adjust the spinning speed
+            local radius = 7  -- Adjust the radius of the circle
+            local offset = Vector3.new(radius * math.cos(angle), -0.1, radius * math.sin(angle))
+            sphere.Position = humanoidRootPart.Position + offset
+            angle = angle + math.rad(5.5)  -- Adjust the spinning speed
         else
             sphere:Destroy()
         end
@@ -40,6 +38,10 @@ end
 -- Create a circle of spinning spheres
 local numSpheres = 10  -- Adjust the number of spheres
 for i = 1, numSpheres do
+    local angle = (i - 1) * (360 / numSpheres)
+    CreateSpinningSphere(game.Workspace, math.rad(angle))
+end
+
     local angle = (i - 1) * (360 / numSpheres)
     CreateSpinningSphere(game.Workspace, angle)
 end
