@@ -1,0 +1,45 @@
+-- Function to create a floating sphere
+local function CreateFloatingSphere(parent, offset)
+    local sphere = Instance.new("Part")
+    sphere.Size = Vector3.new(5, 5, 5)
+    sphere.Shape = Enum.PartType.Ball
+    sphere.BrickColor = BrickColor.new("Bright red")
+    sphere.Anchored = true
+    sphere.CanCollide = false
+    sphere.Transparency = 0.5
+    sphere.Parent = parent
+
+    local function UpdatePosition()
+        local player = game.Players.LocalPlayer
+        local character = player.Character
+        local humanoidRootPart = character and character:FindFirstChild("HumanoidRootPart")
+
+        if humanoidRootPart and sphere.Parent then
+            local angle = math.rad(offset)
+            local radius = 20  -- Adjust the radius of the circle
+            local x = humanoidRootPart.Position.x + radius * math.cos(angle)
+            local z = humanoidRootPart.Position.z + radius * math.sin(angle)
+            sphere.Position = Vector3.new(x, humanoidRootPart.Position.y, z)
+        else
+            sphere:Destroy()
+        end
+    end
+
+    local connection
+    connection = game:GetService("RunService").Heartbeat:Connect(function()
+        UpdatePosition()
+    end)
+
+    sphere.AncestryChanged:Connect(function(_, parent)
+        if not parent then
+            connection:Disconnect()
+        end
+    end)
+end
+
+-- Create a circle of floating spheres
+local numSpheres = 10  -- Adjust the number of spheres
+for i = 1, numSpheres do
+    local offset = (i - 1) * (360 / numSpheres)
+    CreateFloatingSphere(game.Workspace, offset)
+end
